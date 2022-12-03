@@ -43,10 +43,12 @@ class Cover(models.Model):
 class Book(models.Model):
     objects = None
 
-    def validate_title(self):
-        title = Book.objects
-        if self.title in ... and :
-            raise forms.ValidationError('Названия не должны повторяться')
+    def validate_title(self, request):
+        tit = Book.objects.all()
+        data = Book.parse(request)
+        for i in tit.values('title'):
+            if data in i.values():
+                raise forms.ValidationError('Названия не должны повторяться')
 
     title = models.CharField(max_length=100, verbose_name='Название книги', blank=False,
                              validators=[validate_title])
