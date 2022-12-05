@@ -2,8 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms import forms
-from django.utils.datetime_safe import datetime
-from rest_framework import request
 
 
 class User(AbstractUser):
@@ -60,6 +58,9 @@ class Book(models.Model):
     photoPreview = models.ImageField(validators=[validate_image], upload_to='cover', verbose_name='Изображения',
                                      blank=False, null=True)
     bookFile = models.FileField(upload_to='books', verbose_name='Файл с книгой', blank=False, null=True)
+
+    def __str__(self):
+        return self.title, self.genre, self.author
 
     class Meta:
         unique_together = ('title', 'yearOfRel', 'publisher')

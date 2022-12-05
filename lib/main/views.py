@@ -1,11 +1,8 @@
-from django.forms import forms
-from rest_framework import permissions, viewsets, renderers
-from rest_framework.decorators import action
-from rest_framework.response import Response
-
+from rest_framework import permissions, viewsets
 from .models import Book, Author, User
 from .permissions import IsOwnerOrReadOnly
 from .serializers import UserSerializer, BookSerializer, AuthorSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -18,6 +15,8 @@ class BookViewSet(viewsets.ModelViewSet):
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'genre', 'author']
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
