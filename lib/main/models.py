@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms import forms
 from django.utils.datetime_safe import datetime
+from rest_framework import request
 
 
 class User(AbstractUser):
@@ -43,15 +44,7 @@ class Cover(models.Model):
 class Book(models.Model):
     objects = None
 
-    def validate_title(self, request):
-        tit = Book.objects.all()
-        data = Book.parse(request)
-        for i in tit.values('title'):
-            if data in i.values():
-                raise forms.ValidationError('Названия не должны повторяться')
-
-    title = models.CharField(max_length=100, verbose_name='Название книги', blank=False,
-                             validators=[validate_title])
+    title = models.CharField(max_length=100, verbose_name='Название книги', blank=False)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, max_length=100, verbose_name='Автор', blank=False)
     yearOfRel = models.IntegerField(verbose_name='Год выпуска', blank=False,
                                     validators=[MinValueValidator(1000), MaxValueValidator(9999)])
@@ -69,6 +62,6 @@ class Book(models.Model):
     bookFile = models.FileField(upload_to='books', verbose_name='Файл с книгой', blank=False, null=True)
 
     class Meta:
-        unique_together = ('title', 'author', 'yearOfRel', 'publisher')
+        unique_together = ('title', 'yearOfRel', 'publisher')
         verbose_name = 'Книга'
         verbose_name_plural = 'Книги'
